@@ -353,6 +353,8 @@ public class TimKiemNhanVienDialog extends JDialog {
         return text == null ? "" : text;
     }
 
+    // TÍNH NĂNG 5: TÌM KIẾM NÂNG CAO (Thống kê số lượng lọc được)
+    // Cập nhật ketQuaLocLabel bằng số lượng phần tử của displayedEmployees
     private void refreshTable(Predicate<NhanVien> filter) {
         tableModel.setRowCount(0);
         displayedEmployees.clear();
@@ -531,6 +533,8 @@ public class TimKiemNhanVienDialog extends JDialog {
         onChanged.run();
     }
 
+    // TÍNH NĂNG 5: TÌM KIẾM NÂNG CAO (Khoảng số & Thời gian thực)
+    // Thuật toán băm chuỗi (split) để nhận diện nếu người dùng nhập khoảng số như '20-30'
     private boolean matchesCurrentFilter(NhanVien employee) {
         String criterion = (String) criterionBox.getSelectedItem();
         if ("Giới tính".equals(criterion)) {

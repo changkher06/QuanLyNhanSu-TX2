@@ -116,6 +116,8 @@ public class GUINhanVien extends JDialog {
 		styleComponents(getContentPane());
 	}
 
+	// TÍNH NĂNG KỸ THUẬT: ĐỆ QUY NHUỘM MÀU GIAO DIỆN
+	// Chui vào mọi ngóc ngách của các JPanel để tự động quét và nhuộm màu nút bấm
 	private void styleComponents(Container container) {
 		container.setBackground(BACKGROUND);
 		for (Component component : container.getComponents()) {
@@ -268,6 +270,9 @@ public class GUINhanVien extends JDialog {
 			current.setNgayNhan(start);
 			current.setNgayKetthuc(end);
 			if (row < 0) {
+				// TÍNH NĂNG 3: TỰ ĐỘNG CHỐT SỔ LỊCH SỬ CHỨC VỤ
+				// Khi thêm chức vụ mới, hệ thống tự động tìm lại chức vụ cũ (gần nhất) 
+				// và lấy ngày nhận chức mới để đắp vào 'Ngày kết thúc' của chức cũ.
 				java.util.List<ChucVu> history = nhanVien.getLichSuChucVu();
 				if (!history.isEmpty()) {
 					ChucVu last = history.get(history.size() - 1);

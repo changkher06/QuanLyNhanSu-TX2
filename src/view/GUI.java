@@ -57,6 +57,8 @@ public class GUI extends JFrame {
 	private final JList<PhongBan> phongBanList = new JList<>(phongBanModel);
 	private int lastClickedCol = -1;
 	private int lastClickedRow = -1;
+	// TÍNH NĂNG 7: CHỈNH SỬA TRỰC TIẾP TRÊN BẢNG (Inline-Editing)
+	// Cho phép click đúp vào các ô của bảng để sửa dữ liệu nhanh chóng.
 	private final DefaultTableModel nhanVienModel = new DefaultTableModel(
 			new Object[] { "Mã NV", "Họ tên", "Ngày sinh", "Ngày vào làm", "Số điện thoại", "Giới tính", "Trạng thái", "Vị trí", "Ngày công" }, 0) {
 		@Override
@@ -241,6 +243,8 @@ public class GUI extends JFrame {
 		JOptionPane.showMessageDialog(this, features, "Hướng dẫn tính năng", JOptionPane.INFORMATION_MESSAGE);
 	}
 
+	// TÍNH NĂNG 5: TÌM KIẾM NÂNG CAO
+	// Mở hộp thoại tìm kiếm hỗ trợ lọc theo khoảng (VD: '20-30') và thống kê thời gian thực
 	private void showSearchDialog(String criterion) {
 		PhongBan phongBan = phongBanList.getSelectedValue();
 		if (phongBan == null) {
@@ -491,6 +495,8 @@ public class GUI extends JFrame {
 		javax.swing.JComboBox<String> cbTrangThai = new javax.swing.JComboBox<>(new String[]{"Đang làm", "Nghỉ phép", "Nghỉ việc", "Thử việc"});
 		nhanVienTable.getColumnModel().getColumn(6).setCellEditor(new javax.swing.DefaultCellEditor(cbTrangThai));
 		
+		// TÍNH NĂNG 6: SẮP XẾP THÔNG MINH BẢNG DỮ LIỆU
+		// Khởi tạo TableRowSorter để cho phép người dùng click tiêu đề cột để sắp xếp
 		javax.swing.table.TableRowSorter<DefaultTableModel> sorter = new javax.swing.table.TableRowSorter<>(nhanVienModel);
 		nhanVienTable.setRowSorter(sorter);
 		java.util.Comparator<String> dateComparator = (s1, s2) -> {
@@ -551,6 +557,8 @@ public class GUI extends JFrame {
 		});
 	}
 
+	// TÍNH NĂNG 8: CHỈNH SỬA NHANH VỊ TRÍ (Shortcut nhảy Tab)
+	// Cho phép click đúp vào cột Vị trí để mở thẳng sang Tab Lịch sử chức vụ của Hồ sơ
 	private void quickEditCell(int viewRow, int viewCol) {
 		if (viewRow < 0 || viewCol < 0) return;
 		int modelRow = nhanVienTable.convertRowIndexToModel(viewRow);
@@ -624,6 +632,8 @@ public class GUI extends JFrame {
 		}
 	}
 
+	// TÍNH NĂNG 10: SỬA TRẠNG THÁI HÀNG LOẠT (Bulk-Editing)
+	// Quét các dòng đang bôi đen và dùng convertRowIndexToModel để sửa dữ liệu an toàn.
 	private void bulkEditStatus() {
 		int[] selectedRows = nhanVienTable.getSelectedRows();
 		if (selectedRows.length == 0) {
@@ -648,6 +658,8 @@ public class GUI extends JFrame {
 		}
 	}
 
+	// TÍNH NĂNG 9: THAO TÁC CHUỘT PHẢI ĐA NĂNG
+	// Bắt sự kiện chuột phải thông minh, không làm mất bôi đen hiện tại nếu click trúng vùng xanh.
 	private void showNhanVienContextMenu(java.awt.event.MouseEvent event, javax.swing.JPopupMenu contextMenu) {
 		if (!event.isPopupTrigger()) {
 			return;
@@ -665,6 +677,8 @@ public class GUI extends JFrame {
 		contextMenu.show(nhanVienTable, event.getX(), event.getY());
 	}
 
+	// TÍNH NĂNG 3: HỒ SƠ CHI TIẾT & TỰ ĐỘNG HÓA LỊCH SỬ CHỨC VỤ
+	// Mở cửa sổ hồ sơ, nơi phần mềm sẽ tự động chốt sổ ngày kết thúc khi thêm chức vụ mới
 	private void showEditNhanVienDialog() {
 		PhongBan phongBan = getSelectedPhongBan();
 		int viewIndex = nhanVienTable.getSelectedRow();
@@ -905,6 +919,8 @@ public class GUI extends JFrame {
 				viTriField.getText().trim(), queQuanField.getText().trim(), hireDate, null);
 	}
 
+	// TÍNH NĂNG 4: TÍNH NGÀY CÔNG & PHÂN LOẠI
+	// Cập nhật số ngày đã làm và tính toán tỷ lệ % hoàn thành tự động
 	private void calculateNgayCong() {
 		PhongBan phongBan = getSelectedPhongBan();
 		int viewIndex = nhanVienTable.getSelectedRow();
@@ -1005,6 +1021,8 @@ public class GUI extends JFrame {
 		}
 	}
 
+	// TÍNH NĂNG 1 & 2: THỐNG KÊ TỔNG SỐ NHÂN VIÊN TOÀN CÔNG TY
+	// Thuật toán vòng lặp quét qua tất cả phòng ban và cộng dồn số lượng nhân viên
 	private void updateTongSoCongTy() {
 		int total = 0;
 		for (int i = 0; i < phongBanModel.getSize(); i++) {
