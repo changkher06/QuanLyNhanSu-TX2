@@ -371,8 +371,8 @@ public class TimKiemNhanVienDialog extends JDialog {
             tableModel.addRow(new Object[] { employee.getId(), employee.getFullName(), formatDate(employee.getBirthDate()),
                     formatDate(employee.getNgayVaoLam()), employee.getSoDT(),
                     Boolean.TRUE.equals(employee.getGioiTinh()) ? "Nam" : "Nữ", employee.getTrangThai(), employee.getViTri(),
-                    workdays == null ? "Chưa tính" : String.format("%.1f/%.1f (%.1f%%)", workdays.getSoNgayDaLam(),
-                            workdays.getSoNgayChuan(), workdays.tinhPhanTramHoanThanh()) });
+                    workdays == null ? "Chưa tính" : String.format("%.1f/%.1f (%.1f%%) - %s", workdays.getSoNgayDaLam(),
+                            workdays.getSoNgayChuan(), workdays.tinhPhanTramHoanThanh(), workdays.getPhanLoai()) });
         }
         ketQuaLocLabel.setText("Số lượng đã lọc: " + displayedEmployees.size());
     }

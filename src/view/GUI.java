@@ -943,8 +943,8 @@ public class GUI extends JFrame {
 			refreshNhanVienTable();
 			nhanVienTable.setRowSelectionInterval(viewIndex, viewIndex);
 			JOptionPane.showMessageDialog(this,
-					String.format("Ngày công: %.1f/%.1f (%.1f%%)", soNgayDaLam,
-							soNgayChuan, ngayCong.tinhPhanTramHoanThanh()),
+					String.format("Ngày công: %.1f/%.1f (%.1f%%)\nPhân loại: %s", soNgayDaLam,
+							soNgayChuan, ngayCong.tinhPhanTramHoanThanh(), ngayCong.getPhanLoai()),
 						"Kết quả ngày công", JOptionPane.INFORMATION_MESSAGE);
 		} catch (NumberFormatException exception) {
 			showError("Ngày công và ngày chuẩn phải là số hợp lệ.");
@@ -1016,8 +1016,8 @@ public class GUI extends JFrame {
 		} else {
 			ngayCongField.setText(String.valueOf(ngayCong.getSoNgayDaLam()));
 			ngayChuanField.setText(String.valueOf(ngayCong.getSoNgayChuan()));
-			ketQuaNgayCongLabel.setText(String.format("Kết quả: %.1f%%",
-					ngayCong.tinhPhanTramHoanThanh()));
+			ketQuaNgayCongLabel.setText(String.format("Kết quả: %.1f%% - Xếp loại: %s",
+					ngayCong.tinhPhanTramHoanThanh(), ngayCong.getPhanLoai()));
 		}
 	}
 
@@ -1050,9 +1050,9 @@ public class GUI extends JFrame {
 					formatDate(nhanVien.getNgayVaoLam()), nhanVien.getSoDT(),
 					Boolean.TRUE.equals(nhanVien.getGioiTinh()) ? "Nam" : "Nữ",
 					nhanVien.getTrangThai(), nhanVien.getViTri(),
-					ngayCong == null ? "Chưa tính" : String.format("%.1f/%.1f (%.1f%%)",
+					ngayCong == null ? "Chưa tính" : String.format("%.1f/%.1f (%.1f%%) - %s",
 							ngayCong.getSoNgayDaLam(), ngayCong.getSoNgayChuan(),
-							ngayCong.tinhPhanTramHoanThanh())
+							ngayCong.tinhPhanTramHoanThanh(), ngayCong.getPhanLoai())
 			});
 		}
 	}

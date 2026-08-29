@@ -21,6 +21,15 @@ public class NgayCong {
         return soNgayDaLam / soNgayChuan * 100;
     }
 
+    public String getPhanLoai() {
+        double tyLe = tinhPhanTramHoanThanh();
+        if (tyLe >= 100) return "Xuất sắc";
+        if (tyLe >= 90) return "Giỏi";
+        if (tyLe >= 75) return "Khá";
+        if (tyLe >= 50) return "Trung bình";
+        return "Kém";
+    }
+
     public NhanVien getNhanVien() {
         return nhanVien;
     }
