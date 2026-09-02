@@ -21,12 +21,12 @@ public class DemoLenhGUI {
         demo.napDuLieuMau();
         demo.hienThiDuLieu();
 
-        PhongBan phongBanMoi = demo.themPhongBan("Ke toan", "NV004");
-        NhanVien nhanVienMoi = demo.themNhanVien(phongBanMoi, "NV004", "Pham Thi Dung",
-                "10/10/1998", "0901000004", false, "Dang lam", "Nhan vien");
+        PhongBan phongBanMoi = demo.themPhongBan("Kế toán", "NV004");
+        NhanVien nhanVienMoi = demo.themNhanVien(phongBanMoi, "NV004", "Phạm Thị Dung",
+                "10/10/1998", "0901000004", false, "Đang làm", "Nhân viên");
         demo.tinhNgayCong(nhanVienMoi, 18, 26);
-        demo.suaNhanVien(nhanVienMoi, "Pham Thi Dung", "Ke toan vien");
-        demo.suaPhongBan(phongBanMoi, "Tai chinh - Ke toan", "NV004");
+        demo.suaNhanVien(nhanVienMoi, "Phạm Thị Dung", "Kế toán viên");
+        demo.suaPhongBan(phongBanMoi, "Tài chính - Kế toán", "NV004");
         demo.hienThiDuLieu();
 
         demo.resetNgayCongPhongBan(phongBanMoi);
@@ -38,19 +38,19 @@ public class DemoLenhGUI {
     public void napDuLieuMau() throws ParseException {
         danhSachPhongBan.clear();
         PhongBan kinhDoanh = themPhongBan("Kinh doanh", "NV001");
-        NhanVien truongPhong = themNhanVien(kinhDoanh, "NV001", "Nguyen Van An",
-                "12/03/1985", "0901000001", true, "Dang lam", "Truong phong");
+        NhanVien truongPhong = themNhanVien(kinhDoanh, "NV001", "Nguyễn Văn An",
+                "12/03/1985", "0901000001", true, "Đang làm", "Trưởng phòng");
         tinhNgayCong(truongPhong, 22, 26);
 
-        NhanVien nhanVien = themNhanVien(kinhDoanh, "NV002", "Tran Thi Binh",
-                "25/07/1995", "0901000002", false, "Dang lam", "Nhan vien");
+        NhanVien nhanVien = themNhanVien(kinhDoanh, "NV002", "Trần Thị Bình",
+                "25/07/1995", "0901000002", false, "Đang làm", "Nhân viên");
         tinhNgayCong(nhanVien, 20, 26);
     }
 
     public PhongBan themPhongBan(String tenPhongBan, String maTruongPhong) {
         PhongBan phongBan = new PhongBan(tenPhongBan, maTruongPhong, new ArrayList<>());
         danhSachPhongBan.add(phongBan);
-        System.out.println("Them phong ban: " + tenPhongBan);
+        System.out.println("Thêm phòng ban: " + tenPhongBan);
         return phongBan;
     }
 
@@ -61,36 +61,36 @@ public class DemoLenhGUI {
                 gioiTinh, maNhanVien, trangThai, viTri, "Hà Nội");
         nhanVien.setNgayCong(new NgayCong(nhanVien, 0, 26));
         phongBan.getNhanVien().add(nhanVien);
-        System.out.println("  Them nhan vien: " + hoTen);
+        System.out.println("  Thêm nhân viên: " + hoTen);
         return nhanVien;
     }
 
     public void suaNhanVien(NhanVien nhanVien, String hoTenMoi, String viTriMoi) {
         nhanVien.setFullName(hoTenMoi);
         nhanVien.setViTri(viTriMoi);
-        System.out.println("  Sua nhan vien: " + hoTenMoi);
+        System.out.println("  Sửa nhân viên: " + hoTenMoi);
     }
 
     public void xoaNhanVien(PhongBan phongBan, NhanVien nhanVien) {
         phongBan.getNhanVien().remove(nhanVien);
-        System.out.println("  Xoa nhan vien: " + nhanVien.getFullName());
+        System.out.println("  Xóa nhân viên: " + nhanVien.getFullName());
     }
 
     public void suaPhongBan(PhongBan phongBan, String tenMoi, String maTruongPhongMoi) {
         phongBan.setTenPB(tenMoi);
         phongBan.setIdTruongPhong(maTruongPhongMoi);
-        System.out.println("Sua phong ban: " + tenMoi);
+        System.out.println("Sửa phòng ban: " + tenMoi);
     }
 
     public void xoaPhongBan(PhongBan phongBan) {
         danhSachPhongBan.remove(phongBan);
-        System.out.println("Xoa phong ban: " + phongBan.getTenPB());
+        System.out.println("Xóa phòng ban: " + phongBan.getTenPB());
     }
 
     public void tinhNgayCong(NhanVien nhanVien, double soNgayDaLam, double soNgayChuan) {
         NgayCong ngayCong = new NgayCong(nhanVien, soNgayDaLam, soNgayChuan);
         nhanVien.setNgayCong(ngayCong);
-        System.out.printf("  Tinh ngay cong %s: %.1f/%.1f = %.1f%%%n",
+        System.out.printf("  Tính ngày công %s: %.1f/%.1f = %.1f%%%n",
                 nhanVien.getFullName(), soNgayDaLam, soNgayChuan,
                 ngayCong.tinhPhanTramHoanThanh());
     }
@@ -99,17 +99,17 @@ public class DemoLenhGUI {
         for (NhanVien nhanVien : phongBan.getNhanVien()) {
             nhanVien.setNgayCong(new NgayCong(nhanVien, 0, 26));
         }
-        System.out.println("Reset ngay cong phong ban: " + phongBan.getTenPB());
+        System.out.println("Reset ngày công phòng ban: " + phongBan.getTenPB());
     }
 
     public void hienThiDuLieu() {
-        System.out.println("\nDANH SACH DU LIEU");
+        System.out.println("\nDANH SÁCH DỮ LIỆU");
         for (PhongBan phongBan : danhSachPhongBan) {
-            System.out.println("Phong ban: " + phongBan.getTenPB()
-                    + " | Truong phong: " + phongBan.getIdTruongPhong());
+            System.out.println("Phòng ban: " + phongBan.getTenPB()
+                    + " | Trưởng phòng: " + phongBan.getIdTruongPhong());
             for (NhanVien nhanVien : phongBan.getNhanVien()) {
                 NgayCong ngayCong = nhanVien.getNgayCong();
-                System.out.printf("  - %s | %s | Ngay cong: %.1f/%.1f (%.1f%%)%n",
+                System.out.printf("  - %s | %s | Ngày công: %.1f/%.1f (%.1f%%)%n",
                         nhanVien.getId(), nhanVien.getFullName(),
                         ngayCong.getSoNgayDaLam(), ngayCong.getSoNgayChuan(),
                         ngayCong.tinhPhanTramHoanThanh());
