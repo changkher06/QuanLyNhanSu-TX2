@@ -384,7 +384,7 @@ public class GUI extends JFrame {
 		panel.setBorder(BorderFactory.createTitledBorder("Thông tin nhân viên"));
 
 		JPanel fields = new JPanel(new GridLayout(4, 6, 6, 5));
-		fields.add(new JLabel("Mã NV"));
+		fields.add(new JLabel("Mã NV (theo mẫu NVxxx)"));
 		fields.add(new JLabel("Họ tên"));
 		fields.add(new JLabel("Ngày sinh"));
 		fields.add(new JLabel("Ngày vào làm"));
