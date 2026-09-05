@@ -139,6 +139,7 @@ public class TimKiemNhanVienDialog extends JDialog {
         JButton applyButton = new JButton("Áp dụng");
         JButton allButton = new JButton("Hiển thị tất cả");
         applyButton.addActionListener(event -> applyFilter());
+        valueField.addActionListener(event -> applyFilter());
         allButton.addActionListener(event -> {
             valueField.setText("");
             refreshTable(employee -> true);
