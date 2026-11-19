@@ -632,74 +632,52 @@ public class GUI extends JFrame {
 		clearPhongBanForm();
 	}
 
+	// Du lieu nen co dinh cho TX1 muc 2.2 - sheet DU_LIEU_NEN (58 test case).
 	private void loadSampleData() {
 		try {
 			phongBanModel.clear();
-			java.util.Random rand = new java.util.Random(12345);
-			int idCounter = 100;
 
-			// 1. Phòng Kinh Doanh
-			NhanVien tpKinhDoanh = new NhanVien("Nguyễn Văn An", DATE_FORMAT.parse("12/03/1985"), "0901000001", true, "NV001", "Đang làm", "Trưởng phòng", "Hà Nội", null);
-			tpKinhDoanh.setNgayVaoLam(DATE_FORMAT.parse("01/08/2007"));
-			tpKinhDoanh.setNgayCong(new NgayCong(tpKinhDoanh, 22, 26));
-			tpKinhDoanh.getTrinhDos().add(new TrinhDo("Đại học Quản trị kinh doanh", "15/06/2007"));
-			tpKinhDoanh.getLichSuChucVu().add(new ChucVu("Nhân viên kinh doanh", DATE_FORMAT.parse("01/08/2007"), DATE_FORMAT.parse("31/12/2015")));
-			tpKinhDoanh.getLichSuChucVu().add(new ChucVu("Trưởng phòng kinh doanh", DATE_FORMAT.parse("01/01/2016"), null));
-			tpKinhDoanh.capNhatViTriTheoChucVuHienTai();
-			
-			ArrayList<NhanVien> kinhDoanh = new ArrayList<>();
-			kinhDoanh.add(tpKinhDoanh);
-			for (int i = 0; i < 15; i++) {
-				kinhDoanh.add(generateRandomNhanVien(idCounter++, "Nhân viên kinh doanh", rand));
-			}
-			phongBanModel.addElement(new PhongBan("Kinh doanh", "NV001", kinhDoanh));
-
-			// 2. Phòng Kỹ Thuật
-			NhanVien tpKyThuat = new NhanVien("Lê Văn Cường", DATE_FORMAT.parse("08/11/1982"), "0901000002", true, "NV002", "Đang làm", "Trưởng phòng", "Hồ Chí Minh", null);
-			tpKyThuat.setNgayVaoLam(DATE_FORMAT.parse("15/05/2010"));
-			tpKyThuat.setNgayCong(new NgayCong(tpKyThuat, 26, 26));
-			tpKyThuat.getTrinhDos().add(new TrinhDo("Thạc sĩ CNTT", "20/09/2006"));
-			tpKyThuat.getLichSuChucVu().add(new ChucVu("Trưởng phòng kỹ thuật", DATE_FORMAT.parse("15/05/2010"), null));
-			tpKyThuat.capNhatViTriTheoChucVuHienTai();
-
+			// PB-KT: Phong Ky thuat - ba nhan vien co dinh.
 			ArrayList<NhanVien> kyThuat = new ArrayList<>();
-			kyThuat.add(tpKyThuat);
-			for (int i = 0; i < 20; i++) {
-				kyThuat.add(generateRandomNhanVien(idCounter++, "Kỹ sư phần mềm", rand));
-			}
-			phongBanModel.addElement(new PhongBan("Kỹ thuật", "NV002", kyThuat));
 
-			// 3. Phòng Nhân Sự
-			NhanVien tpNhanSu = new NhanVien("Ngô Thanh Trúc", DATE_FORMAT.parse("22/11/1988"), "0901000003", false, "NV003", "Đang làm", "Trưởng phòng", "Đà Nẵng", null);
-			tpNhanSu.setNgayVaoLam(DATE_FORMAT.parse("01/03/2012"));
-			tpNhanSu.setNgayCong(new NgayCong(tpNhanSu, 24, 26));
-			
-			ArrayList<NhanVien> nhanSu = new ArrayList<>();
-			nhanSu.add(tpNhanSu);
-			for (int i = 0; i < 10; i++) {
-				nhanSu.add(generateRandomNhanVien(idCounter++, "Chuyên viên nhân sự", rand));
-			}
-			phongBanModel.addElement(new PhongBan("Nhân sự", "NV003", nhanSu));
+			NhanVien nv001 = new NhanVien("Nguyễn An", DATE_FORMAT.parse("01/01/2000"),
+					"0900000001", true, "NV001", "Đang làm", "Nhân viên", "Quảng Ninh", null);
+			nv001.setNgayVaoLam(DATE_FORMAT.parse("01/01/2022"));
+			nv001.setNgayCong(new NgayCong(nv001, 0, 26));
+			nv001.getLichSuChucVu().add(new ChucVu("Nhân viên", DATE_FORMAT.parse("01/01/2022"), null));
+			nv001.capNhatViTriTheoChucVuHienTai();
+			kyThuat.add(nv001);
 
-			// 4. Phòng Kế Toán
-			NhanVien tpKeToan = new NhanVien("Đoàn Văn Toàn", DATE_FORMAT.parse("30/01/1980"), "0901000004", true, "NV004", "Đang làm", "Trưởng phòng", "Cần Thơ", null);
-			tpKeToan.setNgayVaoLam(DATE_FORMAT.parse("10/10/2005"));
-			tpKeToan.setNgayCong(new NgayCong(tpKeToan, 25, 26));
-			tpKeToan.getTrinhDos().add(new TrinhDo("Thạc sĩ Kế toán", "15/06/2004"));
-			tpKeToan.getLichSuChucVu().add(new ChucVu("Kế toán viên", DATE_FORMAT.parse("15/06/2005"), DATE_FORMAT.parse("15/06/2010")));
-			tpKeToan.getLichSuChucVu().add(new ChucVu("Kế toán trưởng", DATE_FORMAT.parse("16/06/2010"), null));
-			tpKeToan.capNhatViTriTheoChucVuHienTai();
-			
-			ArrayList<NhanVien> keToan = new ArrayList<>();
-			keToan.add(tpKeToan);
-			for (int i = 0; i < 10; i++) {
-				keToan.add(generateRandomNhanVien(idCounter++, "Kế toán viên", rand));
-			}
-			phongBanModel.addElement(new PhongBan("Ke toan", "NV004", keToan));
+			NhanVien nv002 = new NhanVien("Trần Bình", DATE_FORMAT.parse("01/01/1998"),
+					"0900000002", true, "NV002", "Đang làm", "", "Hà Nội", null);
+			nv002.setNgayVaoLam(DATE_FORMAT.parse("01/01/2024"));
+			// No NgayCong assigned: GUI displays "Chưa tính".
+			kyThuat.add(nv002);
+
+			NhanVien nv003 = new NhanVien("Lê Lan", DATE_FORMAT.parse("01/01/2004"),
+					"0900000003", false, "NV003", "Thử việc", "Thực tập sinh", "Hải Phòng", null);
+			nv003.setNgayVaoLam(DATE_FORMAT.parse("01/01/2026"));
+			nv003.setNgayCong(new NgayCong(nv003, 0, 26));
+			nv003.getLichSuChucVu().add(new ChucVu("Thực tập sinh", DATE_FORMAT.parse("01/01/2026"), null));
+			nv003.capNhatViTriTheoChucVuHienTai();
+			kyThuat.add(nv003);
+
+			phongBanModel.addElement(new PhongBan("Kỹ thuật", "", kyThuat));
+
+			// PB-KD: Phong Kinh doanh - kiem tra pham vi tim kiem va ma trung lien phong.
+			ArrayList<NhanVien> kinhDoanh = new ArrayList<>();
+			NhanVien nv100 = new NhanVien("Nguyễn Mai", DATE_FORMAT.parse("01/01/1995"),
+					"0900000100", false, "NV100", "Đang làm", "Nhân viên kinh doanh", "Hà Nội", null);
+			nv100.setNgayVaoLam(DATE_FORMAT.parse("01/01/2020"));
+			nv100.setNgayCong(new NgayCong(nv100, 0, 26));
+			nv100.getLichSuChucVu().add(new ChucVu("Nhân viên kinh doanh", DATE_FORMAT.parse("01/01/2020"), null));
+			nv100.capNhatViTriTheoChucVuHienTai();
+			kinhDoanh.add(nv100);
+			phongBanModel.addElement(new PhongBan("Kinh doanh", "", kinhDoanh));
 
 			phongBanList.setSelectedIndex(0);
 			phongBanList.repaint();
-		updateTongSoCongTy();
+			updateTongSoCongTy();
 		} catch (ParseException exception) {
 			showError("Không thể khởi tạo dữ liệu mẫu.");
 		}

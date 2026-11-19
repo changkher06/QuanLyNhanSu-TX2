@@ -1,0 +1,10 @@
+target/
+build/
+dist/
+bin/
+*.class
+*.log
+.env
+nbproject/private/
+.idea/
+.vscode/

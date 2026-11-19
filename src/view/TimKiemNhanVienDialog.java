@@ -592,14 +592,6 @@ public class TimKiemNhanVienDialog extends JDialog {
         return getTextValue(employee, criterion).toLowerCase().contains(value);
     }
 
-    private boolean isNumber(String value) {
-        try {
-            return Integer.parseInt(value) >= 0;
-        } catch (NumberFormatException exception) {
-            return false;
-        }
-    }
-
     private int calculateAge(Date birthDate) {
         return calculateYearsSince(birthDate);
     }
