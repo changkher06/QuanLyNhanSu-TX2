@@ -28,6 +28,9 @@ import javax.swing.table.DefaultTableModel;
 import model.ChucVu;
 import model.NhanVien;
 import model.TrinhDo;
+import model.PhongBan;
+import repository.InMemoryNhanSuRepository;
+import service.NhanVienService;
 
 public class GUINhanVien extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -36,6 +39,7 @@ public class GUINhanVien extends JDialog {
 	private final NhanVien nhanVien;
 	private final SimpleDateFormat dateFormat;
 	private final Runnable onSaved;
+	private final NhanVienService nhanVienService;
 
 	private final JTextField idField;
 	private final JTextField nameField;
@@ -67,11 +71,17 @@ public class GUINhanVien extends JDialog {
 
 	public GUINhanVien(Window owner, NhanVien nhanVien, SimpleDateFormat dateFormat,
 			Runnable onSaved) {
+		this(owner, nhanVien, dateFormat, onSaved, resolveService(owner, nhanVien));
+	}
+
+	public GUINhanVien(Window owner, NhanVien nhanVien, SimpleDateFormat dateFormat,
+			Runnable onSaved, NhanVienService nhanVienService) {
 		super(owner, "Hồ sơ nhân viên - " + nhanVien.getFullName(),
 			java.awt.Dialog.ModalityType.APPLICATION_MODAL);
 		this.nhanVien = nhanVien;
 		this.dateFormat = dateFormat;
 		this.onSaved = onSaved;
+		this.nhanVienService = java.util.Objects.requireNonNull(nhanVienService);
 		nhanVien.capNhatViTriTheoChucVuHienTai();
 
 		idField = new JTextField(value(nhanVien.getId()));
@@ -90,6 +100,17 @@ public class GUINhanVien extends JDialog {
 		setSize(760, 520);
 		setLocationRelativeTo(owner);
 		buildInterface();
+	}
+
+	private static NhanVienService resolveService(Window owner, NhanVien nhanVien) {
+		for (Window window = owner; window != null; window = window.getOwner()) {
+			if (window instanceof GUI gui) return gui.getNhanVienService();
+			if (window instanceof TimKiemNhanVienDialog search) return search.getNhanVienService();
+		}
+		// Giữ constructor TX1 cho dialog độc lập; vẫn dùng chính model được truyền vào.
+		var repository = new InMemoryNhanSuRepository();
+		repository.themPhongBan(new PhongBan("Hồ sơ", "", new java.util.ArrayList<>(java.util.List.of(nhanVien))));
+		return new NhanVienService(repository);
 	}
 
 	public void setSelectedTab(int index) {
@@ -317,25 +338,15 @@ public class GUINhanVien extends JDialog {
 			return;
 		}
 		try {
-			nhanVien.setID(idField.getText().trim());
-			if (birthDateField.getDate() == null || hireDateField.getDate() == null
-					|| hireDateField.getDate().before(birthDateField.getDate())) {
-				JOptionPane.showMessageDialog(this, "Ngày sinh và ngày vào làm không hợp lệ.",
-						"Dữ liệu không hợp lệ", JOptionPane.WARNING_MESSAGE);
-				return;
-			}
-			nhanVien.setFullName(nameField.getText().trim());
-			nhanVien.setNgayVaoLam(hireDateField.getDate());
-			nhanVien.setBirthDate(parseRequiredDate(birthDateField.getDate(), "Ngày sinh"));
-			nhanVien.setSoDT(phoneField.getText().trim());
-			nhanVien.setQueQuan(queQuanField.getText().trim());
-			nhanVien.setGioiTinh(genderBox.getSelectedIndex() == 0);
-			nhanVien.setTrangThai((String) statusBox.getSelectedItem());
-			nhanVien.setViTri(positionField.getText().trim());
+			NhanVien input = new NhanVien(nameField.getText(), birthDateField.getDate(),
+					phoneField.getText().trim(), genderBox.getSelectedIndex() == 0,
+					idField.getText(), (String) statusBox.getSelectedItem(), positionField.getText().trim(),
+					queQuanField.getText().trim(), hireDateField.getDate(), null);
+			nhanVienService.capNhatThongTin(nhanVien, input);
 			onSaved.run();
 			dispose();
-		} catch (ParseException exception) {
-			showError("Ngày sinh phải có định dạng dd/MM/yyyy.");
+		} catch (IllegalArgumentException exception) {
+			showError(exception.getMessage());
 		}
 	}
 

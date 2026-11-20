@@ -1,0 +1,55 @@
+{
+  "api": {
+    "total": 46,
+    "passed": 46,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "changed": []
+  },
+  "unit": {
+    "total": 91,
+    "passed": 57,
+    "failed": 34,
+    "errors": 0,
+    "skipped": 0,
+    "changed": []
+  },
+  "gui": {
+    "total": 110,
+    "passed": 93,
+    "failed": 17,
+    "errors": 0,
+    "skipped": 0,
+    "changed": []
+  },
+  "verification": {
+    "protected_files_unchanged": 21,
+    "characterization_assertions_unchanged": true,
+    "changed_existing_files": [
+      "README_API.md",
+      "gui-test/Tx1SwingBehaviorCompatibilityTest.java",
+      "src/api/ApiException.java",
+      ".classpath",
+      ".project",
+      "pom.xml",
+      "src/view/GUI.java"
+    ],
+    "production_eclipse_compiler": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "all_sources_eclipse_compiler": {
+      "errors": 0,
+      "warnings": 2,
+      "warning_file": "gui-test/GUIBlackBox58Test.java"
+    },
+    "java_release": 17,
+    "git_head": "3312331bcc5ef2796590734e4d74faef4abf2aba",
+    "m2e_test_outputs": {
+      "test": "target/test-classes-ide",
+      "gui-test": "target/test-classes-ide",
+      "api-test": "target/test-classes-ide"
+    }
+  }
+}

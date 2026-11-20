@@ -11,7 +11,6 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
@@ -32,6 +31,10 @@ import javax.swing.table.DefaultTableModel;
 import model.NgayCong;
 import model.NhanVien;
 import model.PhongBan;
+import repository.InMemoryNhanSuRepository;
+import service.NgayCongService;
+import service.NhanVienService;
+import service.TimKiemNhanVienService;
 
 public class TimKiemNhanVienDialog extends JDialog {
     private static final long serialVersionUID = 1L;
@@ -44,6 +47,9 @@ public class TimKiemNhanVienDialog extends JDialog {
     private final PhongBan phongBan;
     private final SimpleDateFormat dateFormat;
     private final Runnable onChanged;
+    private final NhanVienService nhanVienService;
+    private final TimKiemNhanVienService timKiemService;
+    private final NgayCongService ngayCongService;
     private final JComboBox<String> criterionBox = new JComboBox<>(CRITERIA);
     private final JTextField valueField = new JTextField();
     private final JComboBox<String> genderBox = new JComboBox<>(new String[] { "Nam", "Nữ" });
@@ -67,12 +73,13 @@ public class TimKiemNhanVienDialog extends JDialog {
             NhanVien nv = displayedEmployees.get(row);
             String val = aValue.toString().trim();
             boolean changed = false;
+            try {
             switch (column) {
-                case 0: nv.setID(val); changed = true; break;
+                case 0: nhanVienService.doiMaNhanVien(nv, val); changed = true; break;
                 case 1: nv.setFullName(val); changed = true; break;
                 case 2:
                     try {
-                        nv.setBirthDate(dateFormat.parse(val));
+                        nhanVienService.capNhatNgaySinh(nv, dateFormat.parse(val));
                         changed = true;
                     } catch (java.text.ParseException e) {
                         showError("Ngày sinh không hợp lệ (dd/MM/yyyy).");
@@ -81,7 +88,7 @@ public class TimKiemNhanVienDialog extends JDialog {
                     break;
                 case 3:
                     try {
-                        nv.setNgayVaoLam(dateFormat.parse(val));
+                        nhanVienService.capNhatNgayVaoLam(nv, dateFormat.parse(val));
                         changed = true;
                     } catch (java.text.ParseException e) {
                         showError("Ngày vào làm không hợp lệ (dd/MM/yyyy).");
@@ -91,6 +98,10 @@ public class TimKiemNhanVienDialog extends JDialog {
                 case 4: nv.setSoDT(val); changed = true; break;
                 case 5: nv.setGioiTinh("Nam".equals(val)); changed = true; break;
                 case 6: nv.setTrangThai(val); changed = true; break;
+            }
+            } catch (IllegalArgumentException exception) {
+                showError(exception.getMessage());
+                return;
             }
             if (changed) {
                 super.setValueAt(aValue, row, column);
@@ -105,10 +116,18 @@ public class TimKiemNhanVienDialog extends JDialog {
 
     public TimKiemNhanVienDialog(Window owner, PhongBan phongBan, SimpleDateFormat dateFormat,
             String initialCriterion, Runnable onChanged) {
+        this(owner, phongBan, dateFormat, initialCriterion, onChanged, resolveService(owner, phongBan));
+    }
+
+    public TimKiemNhanVienDialog(Window owner, PhongBan phongBan, SimpleDateFormat dateFormat,
+            String initialCriterion, Runnable onChanged, NhanVienService nhanVienService) {
         super(owner, "Tìm kiếm nhân viên - " + phongBan.getTenPB(), ModalityType.MODELESS);
         this.phongBan = phongBan;
         this.dateFormat = dateFormat;
         this.onChanged = onChanged;
+        this.nhanVienService = java.util.Objects.requireNonNull(nhanVienService);
+        this.timKiemService = new TimKiemNhanVienService(nhanVienService.getRepository());
+        this.ngayCongService = new NgayCongService(nhanVienService.getRepository());
         criterionBox.setSelectedItem(initialCriterion);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(1280, 650);
@@ -116,6 +135,19 @@ public class TimKiemNhanVienDialog extends JDialog {
         setLocationRelativeTo(owner);
         buildInterface();
         refreshTable(employee -> true);
+    }
+
+    public NhanVienService getNhanVienService() {
+        return nhanVienService;
+    }
+
+    private static NhanVienService resolveService(Window owner, PhongBan phongBan) {
+        for (Window window = owner; window != null; window = window.getOwner()) {
+            if (window instanceof GUI gui) return gui.getNhanVienService();
+        }
+        var repository = new InMemoryNhanSuRepository();
+        repository.themPhongBan(phongBan);
+        return new NhanVienService(repository);
     }
 
     private void buildInterface() {
@@ -259,111 +291,19 @@ public class TimKiemNhanVienDialog extends JDialog {
 
     private void applyFilter() {
         String criterion = (String) criterionBox.getSelectedItem();
-        if ("Giới tính".equals(criterion)) {
-            boolean male = "Nam".equals(genderBox.getSelectedItem());
-            refreshTable(employee -> Boolean.TRUE.equals(employee.getGioiTinh()) == male);
-            return;
-        }
-        String value = valueField.getText().trim();
-        if (value.isEmpty()) {
-            showError("Vui lòng nhập giá trị tìm kiếm.");
-            return;
-        }
-        
-        if ("Tuổi".equals(criterion) || "Thâm niên".equals(criterion) || "Mã nhân viên".equals(criterion)) {
-            if (value.contains("-")) {
-                try {
-                    String[] parts = value.split("-");
-                    if (parts.length == 2) {
-                        int min = Integer.parseInt(parts[0].trim());
-                        int max = Integer.parseInt(parts[1].trim());
-                        if (min >= 0 && max >= 0 && min <= max) {
-                            if ("Tuổi".equals(criterion)) {
-                                refreshTable(employee -> {
-                                    int age = calculateAge(employee.getBirthDate());
-                                    return age >= min && age <= max;
-                                });
-                            } else if ("Thâm niên".equals(criterion)) {
-                                refreshTable(employee -> {
-                                    int seniority = calculateSeniority(employee.getNgayVaoLam());
-                                    return seniority >= min && seniority <= max;
-                                });
-                            } else if ("Mã nhân viên".equals(criterion)) {
-                                refreshTable(employee -> {
-                                    int id = extractNumber(employee.getId());
-                                    return id != -1 && id >= min && id <= max;
-                                });
-                            }
-                            return;
-                        }
-                    }
-                } catch (NumberFormatException e) {
-                    // Fall through to exact match or string match
-                }
-            }
-            
-            try {
-                int number = Integer.parseInt(value);
-                if (number >= 0) {
-                    if ("Tuổi".equals(criterion)) {
-                        refreshTable(employee -> calculateAge(employee.getBirthDate()) == number);
-                        return;
-                    } else if ("Thâm niên".equals(criterion)) {
-                        refreshTable(employee -> calculateSeniority(employee.getNgayVaoLam()) == number);
-                        return;
-                    } else if ("Mã nhân viên".equals(criterion)) {
-                        refreshTable(employee -> {
-                            int id = extractNumber(employee.getId());
-                            return id == number;
-                        });
-                        return;
-                    }
-                }
-            } catch (NumberFormatException e) {
-                if (!"Mã nhân viên".equals(criterion)) {
-                    showError("Giá trị tìm kiếm số phải là số nguyên không âm hoặc khoảng hợp lệ (VD: 10-20).");
-                    return;
-                }
-            }
-        }
-        
-        String keyword = value.toLowerCase();
-        refreshTable(employee -> getTextValue(employee, criterion).toLowerCase().contains(keyword));
+        String value = "Giới tính".equals(criterion)
+                ? (String) genderBox.getSelectedItem() : valueField.getText();
+        timKiemService.apDungBoLoc(criterion, value, this::refreshTable, this::showError);
     }
 
-    private int extractNumber(String text) {
-        if (text == null) return -1;
-        String num = text.replaceAll("[^0-9]", "");
-        return num.isEmpty() ? -1 : Integer.parseInt(num);
-    }
-
-    private String getTextValue(NhanVien employee, String criterion) {
-        if ("Họ tên".equals(criterion)) {
-            return value(employee.getFullName());
-        }
-        if ("Mã nhân viên".equals(criterion)) {
-            return value(employee.getId());
-        }
-        if ("Trạng thái".equals(criterion)) {
-            return value(employee.getTrangThai());
-        }
-        return value(employee.getViTri());
-    }
-
-    private String value(String text) {
-        return text == null ? "" : text;
-    }
-
-    // TÍNH NĂNG 5: TÌM KIẾM NÂNG CAO (Thống kê số lượng lọc được)
-    // Cập nhật ketQuaLocLabel bằng số lượng phần tử của displayedEmployees
     private void refreshTable(Predicate<NhanVien> filter) {
         tableModel.setRowCount(0);
         displayedEmployees.clear();
-        if (phongBan.getNhanVien() == null) {
+        if (!nhanVienService.getRepository().danhSachPhongBan().contains(phongBan)) {
             ketQuaLocLabel.setText("Số lượng đã lọc: 0");
             return;
         }
-        for (NhanVien employee : phongBan.getNhanVien()) {
+        for (NhanVien employee : timKiemService.tatCa(phongBan)) {
             if (!filter.test(employee)) {
                 continue;
             }
@@ -384,11 +324,12 @@ public class TimKiemNhanVienDialog extends JDialog {
         int modelCol = table.convertColumnIndexToModel(viewCol);
         NhanVien nv = displayedEmployees.get(modelRow);
         
+        try {
         switch (modelCol) {
             case 0:
                 String newId = JOptionPane.showInputDialog(this, "Nhập Mã NV mới:", nv.getId());
                 if (newId != null && !newId.trim().isEmpty()) {
-                    nv.setID(newId.trim());
+                    nhanVienService.doiMaNhanVien(nv, newId.trim());
                     refreshTable(this::matchesCurrentFilter);
                     onChanged.run();
                 }
@@ -410,8 +351,8 @@ public class TimKiemNhanVienDialog extends JDialog {
                 if (newDateStr != null && !newDateStr.trim().isEmpty()) {
                     try {
                         java.util.Date newDate = dateFormat.parse(newDateStr.trim());
-                        if (modelCol == 2) nv.setBirthDate(newDate);
-                        else nv.setNgayVaoLam(newDate);
+                        if (modelCol == 2) nhanVienService.capNhatNgaySinh(nv, newDate);
+                        else nhanVienService.capNhatNgayVaoLam(nv, newDate);
                         refreshTable(this::matchesCurrentFilter);
                         onChanged.run();
                     } catch (java.text.ParseException e) {
@@ -456,6 +397,9 @@ public class TimKiemNhanVienDialog extends JDialog {
             case 8:
                 showError("Vui lòng mở màn hình chính hoặc hồ sơ để tính ngày công.");
                 break;
+        }
+        } catch (IllegalArgumentException exception) {
+            showError(exception.getMessage());
         }
     }
 
@@ -514,7 +458,7 @@ public class TimKiemNhanVienDialog extends JDialog {
         int result = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa nhân viên " + employee.getFullName() + "?",
                 "Xóa nhân viên", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (result == JOptionPane.YES_OPTION) {
-            phongBan.getNhanVien().remove(employee);
+            nhanVienService.xoaNhanVien(phongBan, employee);
             refreshTable(this::matchesCurrentFilter);
             onChanged.run();
         }
@@ -527,91 +471,17 @@ public class TimKiemNhanVienDialog extends JDialog {
         if (result != JOptionPane.YES_OPTION) {
             return;
         }
-        for (NhanVien employee : phongBan.getNhanVien()) {
-            employee.setNgayCong(new NgayCong(employee, 0, 26));
-        }
+        ngayCongService.resetPhongBan(phongBan);
         refreshTable(this::matchesCurrentFilter);
         onChanged.run();
     }
 
-    // TÍNH NĂNG 5: TÌM KIẾM NÂNG CAO (Khoảng số & Thời gian thực)
-    // Thuật toán băm chuỗi (split) để nhận diện nếu người dùng nhập khoảng số như '20-30'
+    // TX1 đọc lại tiêu chí/ô nhập lúc refresh, không giữ predicate lần Áp dụng trước.
     private boolean matchesCurrentFilter(NhanVien employee) {
         String criterion = (String) criterionBox.getSelectedItem();
-        if ("Giới tính".equals(criterion)) {
-            return Boolean.TRUE.equals(employee.getGioiTinh()) == "Nam".equals(genderBox.getSelectedItem());
-        }
-        String value = valueField.getText().trim().toLowerCase();
-        if (value.isEmpty()) {
-            return true;
-        }
-        
-        if ("Tuổi".equals(criterion) || "Thâm niên".equals(criterion) || "Mã nhân viên".equals(criterion)) {
-            if (value.contains("-")) {
-                try {
-                    String[] parts = value.split("-");
-                    if (parts.length == 2) {
-                        int min = Integer.parseInt(parts[0].trim());
-                        int max = Integer.parseInt(parts[1].trim());
-                        if (min >= 0 && max >= 0 && min <= max) {
-                            if ("Tuổi".equals(criterion)) {
-                                int age = calculateAge(employee.getBirthDate());
-                                return age >= min && age <= max;
-                            } else if ("Thâm niên".equals(criterion)) {
-                                int seniority = calculateSeniority(employee.getNgayVaoLam());
-                                return seniority >= min && seniority <= max;
-                            } else if ("Mã nhân viên".equals(criterion)) {
-                                int idNum = extractNumber(employee.getId());
-                                return idNum != -1 && idNum >= min && idNum <= max;
-                            }
-                        }
-                    }
-                } catch (NumberFormatException e) {
-                    // Fall through
-                }
-            }
-            try {
-                int number = Integer.parseInt(value);
-                if (number >= 0) {
-                    if ("Tuổi".equals(criterion)) {
-                        return calculateAge(employee.getBirthDate()) == number;
-                    } else if ("Thâm niên".equals(criterion)) {
-                        return calculateSeniority(employee.getNgayVaoLam()) == number;
-                    } else if ("Mã nhân viên".equals(criterion)) {
-                        int idNum = extractNumber(employee.getId());
-                        return idNum == number;
-                    }
-                }
-            } catch (NumberFormatException e) {
-                if (!"Mã nhân viên".equals(criterion)) {
-                    return false;
-                }
-            }
-        }
-        
-        return getTextValue(employee, criterion).toLowerCase().contains(value);
-    }
-
-    private int calculateAge(Date birthDate) {
-        return calculateYearsSince(birthDate);
-    }
-
-    private int calculateSeniority(Date hireDate) {
-        return calculateYearsSince(hireDate);
-    }
-
-    private int calculateYearsSince(Date date) {
-        if (date == null) {
-            return -1;
-        }
-        Calendar today = Calendar.getInstance();
-        Calendar start = Calendar.getInstance();
-        start.setTime(date);
-        int years = today.get(Calendar.YEAR) - start.get(Calendar.YEAR);
-        if (today.get(Calendar.DAY_OF_YEAR) < start.get(Calendar.DAY_OF_YEAR)) {
-            years--;
-        }
-        return years;
+        String value = "Giới tính".equals(criterion)
+                ? (String) genderBox.getSelectedItem() : valueField.getText();
+        return timKiemService.khopBoLocHienTai(employee, criterion, value);
     }
 
     private String formatDate(Date date) {

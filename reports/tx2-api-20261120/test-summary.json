@@ -1,0 +1,33 @@
+{
+  "unit": {
+    "total": 91,
+    "passed": 57,
+    "failed": 34,
+    "errors": 0,
+    "skipped": 0,
+    "changes_from_pre_api": []
+  },
+  "gui": {
+    "total": 110,
+    "passed": 93,
+    "failed": 17,
+    "errors": 0,
+    "skipped": 0,
+    "changes_from_pre_api": []
+  },
+  "api": {
+    "total": 46,
+    "passed": 46,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "changes_from_pre_api": []
+  },
+  "http": {
+    "passed": 32,
+    "failed": 0
+  },
+  "changed_existing_files": [
+    "pom.xml"
+  ]
+}

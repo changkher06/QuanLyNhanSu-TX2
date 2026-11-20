@@ -1,0 +1,76 @@
+[
+  {
+    "tenPhongBan": "Kỹ thuật",
+    "nhanVien": [
+      {
+        "nhanVien": {
+          "phongBanId": null,
+          "maNv": "NV001",
+          "hoTen": "Nguyễn An",
+          "ngaySinh": "2000-01-01",
+          "ngayVaoLam": "2022-01-01",
+          "soDT": "0900000001",
+          "gioiTinh": true,
+          "trangThai": "Đang làm",
+          "viTri": "Nhân viên",
+          "queQuan": "Quảng Ninh"
+        },
+        "daTinhNgayCong": true,
+        "coLichSuChucVu": true
+      },
+      {
+        "nhanVien": {
+          "phongBanId": null,
+          "maNv": "NV002",
+          "hoTen": "Trần Bình",
+          "ngaySinh": "1998-01-01",
+          "ngayVaoLam": "2024-01-01",
+          "soDT": "0900000002",
+          "gioiTinh": true,
+          "trangThai": "Đang làm",
+          "viTri": "",
+          "queQuan": "Hà Nội"
+        },
+        "daTinhNgayCong": false,
+        "coLichSuChucVu": false
+      },
+      {
+        "nhanVien": {
+          "phongBanId": null,
+          "maNv": "NV003",
+          "hoTen": "Lê Lan",
+          "ngaySinh": "2004-01-01",
+          "ngayVaoLam": "2026-01-01",
+          "soDT": "0900000003",
+          "gioiTinh": false,
+          "trangThai": "Thử việc",
+          "viTri": "Thực tập sinh",
+          "queQuan": "Hải Phòng"
+        },
+        "daTinhNgayCong": true,
+        "coLichSuChucVu": true
+      }
+    ]
+  },
+  {
+    "tenPhongBan": "Kinh doanh",
+    "nhanVien": [
+      {
+        "nhanVien": {
+          "phongBanId": null,
+          "maNv": "NV100",
+          "hoTen": "Nguyễn Mai",
+          "ngaySinh": "1995-01-01",
+          "ngayVaoLam": "2020-01-01",
+          "soDT": "0900000100",
+          "gioiTinh": false,
+          "trangThai": "Đang làm",
+          "viTri": "Nhân viên kinh doanh",
+          "queQuan": "Hà Nội"
+        },
+        "daTinhNgayCong": true,
+        "coLichSuChucVu": true
+      }
+    ]
+  }
+]

@@ -1,0 +1,530 @@
+{
+  "info": {
+    "name": "QuanLyNhanSu TX2 REST API - TX1 behavior",
+    "description": "Run in listed order against a dedicated test server with --tx2.test-data.enabled=true. Reset changes the complete in-memory data tree and invalidates old UUIDs. Business defects are preserved; special numbers are JSON strings.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8080"
+    },
+    {
+      "key": "phongBanId",
+      "value": ""
+    },
+    {
+      "key": "nhanVienId",
+      "value": ""
+    },
+    {
+      "key": "seedId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "01 Reset fixture (test flag required)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/test-data/reset"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Fixture count\", () => pm.expect(pm.response.json().soNhanVien).to.eql(4));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 List departments",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/phong-ban"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.collectionVariables.set(\"phongBanId\", pm.response.json()[0].id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 Find seed code",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/nhan-vien?maNv=NV001"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.collectionVariables.set(\"seedId\", pm.response.json()[0].id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 Create duplicate, age below 18 (TX1)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/nhan-vien",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phongBanId\": \"{{phongBanId}}\",\n  \"maNv\": \"NV001\",\n  \"hoTen\": \"Postman TX2\",\n  \"ngaySinh\": \"2010-01-01\",\n  \"ngayVaoLam\": \"2020-01-01\",\n  \"gioiTinh\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
+              "pm.collectionVariables.set(\"nhanVienId\", pm.response.json().id);",
+              "pm.test(\"Separate technical ID\", () => pm.expect(pm.response.json().id).not.to.eql(pm.collectionVariables.get(\"seedId\")));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 Read created UUID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/nhan-vien/{{nhanVienId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 Find both duplicate records",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/nhan-vien?maNv=NV001"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Both records returned\", () => pm.expect(pm.response.json().length).to.eql(2));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 Work days, TX1 double boundary",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/nhan-vien/{{nhanVienId}}/ngay-cong",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"soNgayDaLam\": 23.4,\n  \"soNgayChuan\": 26\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"TX1 classification\", () => pm.expect(pm.response.json().ngayCong.phanLoai).to.eql(\"Khá\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 Work days, NaN string",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/nhan-vien/{{nhanVienId}}/ngay-cong",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"soNgayDaLam\": \"NaN\",\n  \"soNgayChuan\": 26\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Transparent NaN\", () => pm.expect(pm.response.json().ngayCong.phanTramHoanThanh).to.eql(\"NaN\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 Work days, Infinity pair",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/nhan-vien/{{nhanVienId}}/ngay-cong",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"soNgayDaLam\": \"Infinity\",\n  \"soNgayChuan\": \"Infinity\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 Negative days",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/nhan-vien/{{nhanVienId}}/ngay-cong",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"soNgayDaLam\": -1,\n  \"soNgayChuan\": 26\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 Wrong JSON type",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/nhan-vien/{{nhanVienId}}/ngay-cong",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"soNgayDaLam\": true,\n  \"soNgayChuan\": 26\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 Invalid date order",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/nhan-vien",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phongBanId\": \"{{phongBanId}}\",\n  \"maNv\": \"BAD\",\n  \"hoTen\": \"Invalid order\",\n  \"ngaySinh\": \"2000-01-01\",\n  \"ngayVaoLam\": \"1999-01-01\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13 Malformed UUID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/nhan-vien/invalid"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "14 Unknown UUID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/nhan-vien/00000000-0000-0000-0000-000000000000"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 404\", function () { pm.response.to.have.status(404); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "15 Empty search (TX1 service validation)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/nhan-vien?maNv="
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "16 Missing search parameter",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/nhan-vien"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "17 Reset at end",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/test-data/reset"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "18 Old UUID invalidated",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/nhan-vien/{{nhanVienId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 404\", function () { pm.response.to.have.status(404); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

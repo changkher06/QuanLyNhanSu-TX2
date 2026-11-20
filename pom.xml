@@ -13,9 +13,43 @@
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <test.sourceDirectory>test</test.sourceDirectory>
+        <test.outputDirectory>${project.build.directory}/test-classes-${test.sourceDirectory}</test.outputDirectory>
+        <test.reportsDirectory>${project.build.directory}/surefire-reports-unit</test.reportsDirectory>
+        <test.jvmArgs>-Djava.awt.headless=true</test.jvmArgs>
+        <spring-boot.version>3.5.16</spring-boot.version>
+        <junit.version>5.11.4</junit.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!-- AssertJ Swing: kiểm thử giao diện -->
         <dependency>
             <groupId>org.assertj</groupId>
@@ -28,7 +62,6 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.11.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -36,11 +69,37 @@
     <build>
         <!-- Mã nguồn chính nằm trong src -->
         <sourceDirectory>src</sourceDirectory>
+        <resources>
+            <resource><directory>resources</directory></resource>
+        </resources>
 
-        <!-- Test GUI riêng, không trộn với test Ant -->
-        <testSourceDirectory>gui-test</testSourceDirectory>
+        <!-- Unit test mặc định; -Pgui-tests chạy nguyên bộ Swing TX1. -->
+        <testSourceDirectory>${test.sourceDirectory}</testSourceDirectory>
 
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <goals><goal>select-jdk-toolchain</goal></goals>
+                    </execution>
+                </executions>
+                <configuration><version>[17,18)</version></configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <configuration>
+                    <mainClass>api.QuanLyNhanSuApiApplication</mainClass>
+                    <classifier>api</classifier>
+                </configuration>
+                <executions>
+                    <execution><goals><goal>repackage</goal></goals></execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -51,8 +110,63 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
+                <configuration>
+                    <reportsDirectory>${test.reportsDirectory}</reportsDirectory>
+                    <argLine>${test.jvmArgs}</argLine>
+                    <!-- Tránh chạy nhầm test còn lại từ profile khác trong target. -->
+                    <testClassesDirectory>${test.outputDirectory}</testClassesDirectory>
+                </configuration>
             </plugin>
         </plugins>
+        <testOutputDirectory>${test.outputDirectory}</testOutputDirectory>
     </build>
+
+    <profiles>
+        <!-- Eclipse/VS Code only: resolve all test sources in the editor.
+             CLI test profiles and their selected suites remain unchanged. -->
+        <profile>
+            <id>ide-tests</id>
+            <properties>
+                <test.outputDirectory>${project.build.directory}/test-classes-ide</test.outputDirectory>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.6.1</version>
+                        <executions>
+                            <execution>
+                                <id>ide-test-sources</id>
+                                <phase>generate-test-sources</phase>
+                                <goals><goal>add-test-source</goal></goals>
+                                <configuration>
+                                    <sources>
+                                        <source>gui-test</source>
+                                        <source>api-test</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>api-tests</id>
+            <properties>
+                <test.sourceDirectory>api-test</test.sourceDirectory>
+                <test.reportsDirectory>${project.build.directory}/surefire-reports-api</test.reportsDirectory>
+            </properties>
+        </profile>
+        <profile>
+            <id>gui-tests</id>
+            <properties>
+                <test.sourceDirectory>gui-test</test.sourceDirectory>
+                <test.reportsDirectory>${project.build.directory}/surefire-reports-gui</test.reportsDirectory>
+                <test.jvmArgs>-Djava.awt.headless=false --add-opens=java.base/java.util=ALL-UNNAMED</test.jvmArgs>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

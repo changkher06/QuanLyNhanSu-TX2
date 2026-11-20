@@ -1,5 +1,7 @@
 package model;
 
+import java.math.BigDecimal;
+
 public class NgayCong {
     private NhanVien nhanVien;
     private double soNgayDaLam;
@@ -12,6 +14,11 @@ public class NgayCong {
         this.nhanVien = nhanVien;
         this.soNgayDaLam = soNgayDaLam;
         this.soNgayChuan = soNgayChuan;
+    }
+
+    /** Adapter giai đoạn 1, vẫn chuyển sang double trước khi tính như TX1. */
+    public NgayCong(NhanVien nhanVien, BigDecimal soNgayDaLam, BigDecimal soNgayChuan) {
+        this(nhanVien, soNgayDaLam.doubleValue(), soNgayChuan.doubleValue());
     }
 
     public double tinhPhanTramHoanThanh() {
@@ -52,5 +59,14 @@ public class NgayCong {
 
     public void setSoNgayChuan(double soNgayChuan) {
         this.soNgayChuan = soNgayChuan;
+    }
+
+    /** Adapter hữu hạn, không phải dữ liệu BigDecimal gốc và không dùng để phân loại. */
+    public BigDecimal getSoNgayDaLamChinhXac() {
+        return BigDecimal.valueOf(soNgayDaLam);
+    }
+
+    public BigDecimal getSoNgayChuanChinhXac() {
+        return BigDecimal.valueOf(soNgayChuan);
     }
 }

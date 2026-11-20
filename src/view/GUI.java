@@ -44,9 +44,15 @@ import model.NgayCong;
 import model.NhanVien;
 import model.PhongBan;
 import model.ChucVu;
-import model.TrinhDo;
+import repository.InMemoryNhanSuRepository;
+import repository.NhanSuRepository;
+import service.NgayCongService;
+import service.NhanVienService;
 
 public class GUI extends JFrame {
+	private final NhanSuRepository repository;
+	private final NhanVienService nhanVienService;
+	private final NgayCongService ngayCongService;
 	private static final long serialVersionUID = 1L;
 	private static final Color BACKGROUND = new Color(245, 247, 246);
 	private static final Color TEAL_DARK = new Color(0, 77, 64);
@@ -80,7 +86,19 @@ public class GUI extends JFrame {
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
 	public GUI() {
+		this(new InMemoryNhanSuRepository());
+	}
+
+	/** Factory để truyền cùng repository cho GUI và API trong giai đoạn sau. */
+	public static GUI create(NhanSuRepository repository) {
+		return new GUI(repository);
+	}
+
+	private GUI(NhanSuRepository repository) {
 		super("Quản lý nhân sự công ty Thành Hưng");
+		this.repository = java.util.Objects.requireNonNull(repository);
+		this.nhanVienService = new NhanVienService(repository);
+		this.ngayCongService = new NgayCongService(repository);
 		UIManager.put("Panel.background", BACKGROUND);
 		UIManager.put("OptionPane.background", BACKGROUND);
 		UIManager.put("OptionPane.messageFont", APP_FONT);
@@ -88,7 +106,23 @@ public class GUI extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setMinimumSize(new java.awt.Dimension(1000, 620));
 		buildInterface();
+		reloadPhongBanModel();
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
+	}
+
+	public NhanVienService getNhanVienService() {
+		return nhanVienService;
+	}
+
+	public NgayCongService getNgayCongService() {
+		return ngayCongService;
+	}
+
+	private void reloadPhongBanModel() {
+		phongBanModel.clear();
+		for (PhongBan pb : repository.danhSachPhongBan()) phongBanModel.addElement(pb);
+		if (!phongBanModel.isEmpty()) phongBanList.setSelectedIndex(0);
+		updateTongSoCongTy();
 	}
 
 	private void buildInterface() {
@@ -504,13 +538,7 @@ public class GUI extends JFrame {
 	// TÍNH NĂNG 1 & 2: THỐNG KÊ TỔNG SỐ NHÂN VIÊN TOÀN CÔNG TY
 	// Thuật toán vòng lặp quét qua tất cả phòng ban và cộng dồn số lượng nhân viên
 	private void updateTongSoCongTy() {
-		int total = 0;
-		for (int i = 0; i < phongBanModel.getSize(); i++) {
-			PhongBan pb = phongBanModel.getElementAt(i);
-			if (pb.getNhanVien() != null) {
-				total += pb.getNhanVien().size();
-			}
-		}
+		int total = repository.tatCaNhanVien().size();
 		tongSoCongTyLabel.setText("Tổng số nhân viên toàn công ty: " + total);
 	}
 
@@ -521,7 +549,7 @@ public class GUI extends JFrame {
 		if (phongBan == null || phongBan.getNhanVien() == null) {
 			return;
 		}
-		for (NhanVien nhanVien : phongBan.getNhanVien()) {
+		for (NhanVien nhanVien : repository.danhSachNhanVien(phongBan)) {
 			displayedNhanViens.add(nhanVien);
 			nhanVien.capNhatViTriTheoChucVuHienTai();
 			NgayCong ngayCong = nhanVien.getNgayCong();
@@ -627,6 +655,7 @@ public class GUI extends JFrame {
 		}
 		PhongBan phongBan = new PhongBan(tenPhongBanField.getText().trim(),
 				truongPhongField.getText().trim(), new ArrayList<>());
+		repository.themPhongBan(phongBan);
 		phongBanModel.addElement(phongBan);
 		phongBanList.setSelectedValue(phongBan, true);
 		clearPhongBanForm();
@@ -635,7 +664,7 @@ public class GUI extends JFrame {
 	// Du lieu nen co dinh cho TX1 muc 2.2 - sheet DU_LIEU_NEN (58 test case).
 	private void loadSampleData() {
 		try {
-			phongBanModel.clear();
+			List<PhongBan> sampleDepartments = new ArrayList<>();
 
 			// PB-KT: Phong Ky thuat - ba nhan vien co dinh.
 			ArrayList<NhanVien> kyThuat = new ArrayList<>();
@@ -662,7 +691,7 @@ public class GUI extends JFrame {
 			nv003.capNhatViTriTheoChucVuHienTai();
 			kyThuat.add(nv003);
 
-			phongBanModel.addElement(new PhongBan("Kỹ thuật", "", kyThuat));
+			sampleDepartments.add(new PhongBan("Kỹ thuật", "", kyThuat));
 
 			// PB-KD: Phong Kinh doanh - kiem tra pham vi tim kiem va ma trung lien phong.
 			ArrayList<NhanVien> kinhDoanh = new ArrayList<>();
@@ -673,9 +702,10 @@ public class GUI extends JFrame {
 			nv100.getLichSuChucVu().add(new ChucVu("Nhân viên kinh doanh", DATE_FORMAT.parse("01/01/2020"), null));
 			nv100.capNhatViTriTheoChucVuHienTai();
 			kinhDoanh.add(nv100);
-			phongBanModel.addElement(new PhongBan("Kinh doanh", "", kinhDoanh));
+			sampleDepartments.add(new PhongBan("Kinh doanh", "", kinhDoanh));
 
-			phongBanList.setSelectedIndex(0);
+			repository.thayThePhongBan(sampleDepartments);
+			reloadPhongBanModel();
 			phongBanList.repaint();
 			updateTongSoCongTy();
 		} catch (ParseException exception) {
@@ -683,40 +713,6 @@ public class GUI extends JFrame {
 		}
 	}
 
-	private NhanVien generateRandomNhanVien(int id, String chucVu, java.util.Random rand) throws ParseException {
-		String[] ho = {"Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Huỳnh", "Phan", "Vũ", "Võ", "Đặng", "Bùi", "Đỗ", "Ngô", "Lý", "Dương"};
-		String[] demNam = {"Văn", "Hữu", "Quang", "Đình", "Xuân", "Công", "Thành", "Minh", "Tiến", "Quốc"};
-		String[] demNu = {"Thị", "Thu", "Ngọc", "Bích", "Kim", "Thanh", "Hồng", "Lan", "Mai", "Tuyết"};
-		String[] ten = {"An", "Bình", "Cường", "Dũng", "Hoa", "Hùng", "Linh", "Minh", "Nghĩa", "Phúc", "Quân", "Sáng", "Thảo", "Trang", "Tuấn", "Vinh", "Sơn", "Tiến", "Phát", "Tài", "Giang", "Phong", "Kiên", "Lâm", "My", "Nhung", "Oanh", "Quyên", "Sinh", "Tâm", "Uyên", "Vy", "Yến"};
-		String[] queQuanArr = {"Hà Nội", "Hồ Chí Minh", "Đà Nẵng", "Cần Thơ", "Hải Phòng", "Quảng Ninh", "Nghệ An", "Thanh Hóa", "Đồng Nai", "Bình Dương", "Bắc Ninh", "Vĩnh Phúc"};
-
-		boolean isNam = rand.nextBoolean();
-		String fullName = ho[rand.nextInt(ho.length)] + " " + (isNam ? demNam[rand.nextInt(demNam.length)] : demNu[rand.nextInt(demNu.length)]) + " " + ten[rand.nextInt(ten.length)];
-		String idStr = String.format("NV%03d", id);
-		String soDT = String.format("09%08d", rand.nextInt(100000000));
-		String queQuan = queQuanArr[rand.nextInt(queQuanArr.length)];
-		
-		long startBirth = DATE_FORMAT.parse("01/01/1980").getTime();
-		long endBirth = DATE_FORMAT.parse("31/12/2000").getTime();
-		Date birthDate = new Date(startBirth + (long)(rand.nextDouble() * (endBirth - startBirth)));
-		
-		long startHire = DATE_FORMAT.parse("01/01/2015").getTime();
-		long endHire = DATE_FORMAT.parse("31/12/2023").getTime();
-		Date hireDate = new Date(startHire + (long)(rand.nextDouble() * (endHire - startHire)));
-		
-		NhanVien nv = new NhanVien(fullName, birthDate, soDT, isNam, idStr, "Đang làm", chucVu, queQuan, null);
-		nv.setNgayVaoLam(hireDate);
-		nv.setNgayCong(new NgayCong(nv, 20 + rand.nextInt(7), 26)); // Random 20-26
-		
-		java.util.Calendar cal = java.util.Calendar.getInstance();
-		cal.setTime(birthDate);
-		int namTotNghiep = cal.get(java.util.Calendar.YEAR) + 22;
-		nv.getTrinhDos().add(new TrinhDo("Cử nhân", "15/07/" + namTotNghiep));
-		nv.getLichSuChucVu().add(new ChucVu(chucVu, hireDate, null));
-		nv.capNhatViTriTheoChucVuHienTai();
-		
-		return nv;
-	}
 
 	private void deletePhongBan() {
 		int index = phongBanList.getSelectedIndex();
@@ -724,6 +720,7 @@ public class GUI extends JFrame {
 			showError("Vui lòng chọn phòng ban cần xóa.");
 			return;
 		}
+		repository.xoaPhongBan(phongBanModel.get(index));
 		phongBanModel.remove(index);
 		clearPhongBanForm();
 		nhanVienModel.setRowCount(0);
@@ -740,8 +737,12 @@ public class GUI extends JFrame {
 		if (nhanVien == null) {
 			return;
 		}
-		phongBan.getNhanVien().add(nhanVien);
-		nhanVien.setNgayCong(new NgayCong(nhanVien, 0, 26));
+		try {
+			nhanVienService.themNhanVien(phongBan, nhanVien);
+		} catch (IllegalArgumentException exception) {
+			showError(exception.getMessage());
+			return;
+		}
 		refreshNhanVienTable();
 		phongBanList.repaint();
 		updateTongSoCongTy();
@@ -757,7 +758,7 @@ public class GUI extends JFrame {
 		}
 		int index = nhanVienTable.convertRowIndexToModel(viewIndex);
 		NhanVien nhanVien = displayedNhanViens.get(index);
-		phongBan.getNhanVien().remove(nhanVien);
+		nhanVienService.xoaNhanVien(phongBan, nhanVien);
 		refreshNhanVienTable();
 		phongBanList.repaint();
 		updateTongSoCongTy();
@@ -780,10 +781,6 @@ public class GUI extends JFrame {
 			showError("Ngày vào làm phải có định dạng dd/MM/yyyy.");
 			return null;
 		}
-		if (hireDate.before(birthDate)) {
-			showError("Ngày vào làm không được trước ngày sinh.");
-			return null;
-		}
 		return new NhanVien(hoTenField.getText().trim(), birthDate,
 				soDienThoaiField.getText().trim(), gioiTinhBox.getSelectedIndex() == 0,
 				maNhanVienField.getText().trim(), (String) trangThaiBox.getSelectedItem(),
@@ -802,24 +799,17 @@ public class GUI extends JFrame {
 		}
 		int index = nhanVienTable.convertRowIndexToModel(viewIndex);
 		try {
-			double soNgayDaLam = Double.parseDouble(ngayCongField.getText().trim());
-			double soNgayChuan = Double.parseDouble(ngayChuanField.getText().trim());
-			if (soNgayDaLam < 0 || soNgayChuan <= 0
-					|| soNgayDaLam > soNgayChuan) {
-				showError("Số ngày công không hợp lệ.");
-				return;
-			}
 			NhanVien nhanVien = displayedNhanViens.get(index);
-			NgayCong ngayCong = new NgayCong(nhanVien, soNgayDaLam, soNgayChuan);
-			nhanVien.setNgayCong(ngayCong);
+			NgayCong ngayCong = ngayCongService.capNhatNgayCong(nhanVien,
+					ngayCongField.getText(), ngayChuanField.getText());
 			refreshNhanVienTable();
 			nhanVienTable.setRowSelectionInterval(viewIndex, viewIndex);
 			JOptionPane.showMessageDialog(this,
-					String.format("Ngày công: %.1f/%.1f (%.1f%%)\nPhân loại: %s", soNgayDaLam,
-							soNgayChuan, ngayCong.tinhPhanTramHoanThanh(), ngayCong.getPhanLoai()),
+					String.format("Ngày công: %.1f/%.1f (%.1f%%)\nPhân loại: %s", ngayCong.getSoNgayDaLam(),
+							ngayCong.getSoNgayChuan(), ngayCong.tinhPhanTramHoanThanh(), ngayCong.getPhanLoai()),
 						"Kết quả ngày công", JOptionPane.INFORMATION_MESSAGE);
-		} catch (NumberFormatException exception) {
-			showError("Ngày công và ngày chuẩn phải là số hợp lệ.");
+		} catch (IllegalArgumentException exception) {
+			showError(exception.getMessage());
 		}
 	}
 
@@ -834,11 +824,7 @@ public class GUI extends JFrame {
 				"Reset ngày công phòng ban", JOptionPane.YES_NO_OPTION,
 				JOptionPane.WARNING_MESSAGE);
 		if (result == JOptionPane.YES_OPTION) {
-			if (phongBan.getNhanVien() != null) {
-				for (NhanVien nhanVien : phongBan.getNhanVien()) {
-					nhanVien.setNgayCong(new NgayCong(nhanVien, 0, 26));
-				}
-			}
+			ngayCongService.resetPhongBan(phongBan);
 			refreshNhanVienTable();
 			clearNhanCongFields();
 		}
@@ -946,12 +932,13 @@ public class GUI extends JFrame {
 			NhanVien nv = displayedNhanViens.get(row);
 			String val = aValue.toString().trim();
 			boolean changed = false;
+			try {
 			switch (column) {
-				case 0: nv.setID(val); changed = true; break;
+				case 0: nhanVienService.doiMaNhanVien(nv, val); changed = true; break;
 				case 1: nv.setFullName(val); changed = true; break;
 				case 2:
 					try {
-						nv.setBirthDate(DATE_FORMAT.parse(val));
+						nhanVienService.capNhatNgaySinh(nv, DATE_FORMAT.parse(val));
 						changed = true;
 					} catch (java.text.ParseException e) {
 						showError("Ngày sinh không hợp lệ (dd/MM/yyyy).");
@@ -960,7 +947,7 @@ public class GUI extends JFrame {
 					break;
 				case 3:
 					try {
-						nv.setNgayVaoLam(DATE_FORMAT.parse(val));
+						nhanVienService.capNhatNgayVaoLam(nv, DATE_FORMAT.parse(val));
 						changed = true;
 					} catch (java.text.ParseException e) {
 						showError("Ngày vào làm không hợp lệ (dd/MM/yyyy).");
@@ -970,6 +957,10 @@ public class GUI extends JFrame {
 				case 4: nv.setSoDT(val); changed = true; break;
 				case 5: nv.setGioiTinh("Nam".equals(val)); changed = true; break;
 				case 6: nv.setTrangThai(val); changed = true; break;
+			}
+			} catch (IllegalArgumentException exception) {
+				showError(exception.getMessage());
+				return;
 			}
 			if (changed) {
 				super.setValueAt(aValue, row, column);
@@ -986,11 +977,12 @@ public class GUI extends JFrame {
 		int modelCol = nhanVienTable.convertColumnIndexToModel(viewCol);
 		NhanVien nv = displayedNhanViens.get(modelRow);
 		
+		try {
 		switch (modelCol) {
 			case 0:
 				String newId = JOptionPane.showInputDialog(this, "Nhập Mã NV mới:", nv.getId());
 				if (newId != null && !newId.trim().isEmpty()) {
-					nv.setID(newId.trim());
+					nhanVienService.doiMaNhanVien(nv, newId.trim());
 					refreshNhanVienTable();
 				}
 				break;
@@ -1010,8 +1002,8 @@ public class GUI extends JFrame {
 				if (newDateStr != null && !newDateStr.trim().isEmpty()) {
 					try {
 						java.util.Date newDate = DATE_FORMAT.parse(newDateStr.trim());
-						if (modelCol == 2) nv.setBirthDate(newDate);
-						else nv.setNgayVaoLam(newDate);
+						if (modelCol == 2) nhanVienService.capNhatNgaySinh(nv, newDate);
+						else nhanVienService.capNhatNgayVaoLam(nv, newDate);
 						refreshNhanVienTable();
 					} catch (java.text.ParseException e) {
 						showError("Định dạng ngày không hợp lệ.");
@@ -1050,6 +1042,9 @@ public class GUI extends JFrame {
 			case 8:
 				showError("Vui lòng sử dụng tính năng 'Tính ngày công' ở bên dưới.");
 				break;
+		}
+		} catch (IllegalArgumentException exception) {
+			showError(exception.getMessage());
 		}
 	}
 

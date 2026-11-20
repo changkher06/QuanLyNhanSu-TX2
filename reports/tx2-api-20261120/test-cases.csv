@@ -1,0 +1,248 @@
+﻿suite,class,test,result,classification
+unit,compatibility.RepositoryRecordIdentityTest,deletedIdDoesNotResolveToOtherRecordWithSameCode,PASS,Existing passing regression / characterization
+unit,compatibility.RepositoryRecordIdentityTest,replacementRetainsIdsForSameObjectsAndAssignsNewIdsForNewSampleObjects,PASS,Existing passing regression / characterization
+unit,compatibility.RepositoryRecordIdentityTest,renameDoesNotChangeTechnicalIdentityOrOtherDuplicateRecord,PASS,Existing passing regression / characterization
+unit,compatibility.RepositoryRecordIdentityTest,allRecordsHaveDifferentIdsEvenWithDuplicateEmployeeAndDepartmentNames,PASS,Existing passing regression / characterization
+unit,compatibility.RepositoryRecordIdentityTest,removingDepartmentInvalidatesItsAndItsEmployeesIds,PASS,Existing passing regression / characterization
+unit,compatibility.RepositoryRecordIdentityTest,concurrentDuplicateAddsKeepBothRecordsWithIndependentIds,PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,floatingPointClassificationAndDisplayHaveOriginalDistinctResults,PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,duplicateCodesWithinAndAcrossDepartmentsRemainSeparateModels,PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,"rejectedInputLeavesPreviousWorkdaysUntouched(String, String)[1]",PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,"rejectedInputLeavesPreviousWorkdaysUntouched(String, String)[2]",PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,"rejectedInputLeavesPreviousWorkdaysUntouched(String, String)[3]",PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,"rejectedInputLeavesPreviousWorkdaysUntouched(String, String)[4]",PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,"rejectedInputLeavesPreviousWorkdaysUntouched(String, String)[5]",PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,"rejectedInputLeavesPreviousWorkdaysUntouched(String, String)[6]",PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,"addChecksDateOrderButDoesNotCheckMinimumAge(String, String)[1]",PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,"addChecksDateOrderButDoesNotCheckMinimumAge(String, String)[2]",PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,"addChecksDateOrderButDoesNotCheckMinimumAge(String, String)[3]",PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,applyAndReloadKeepTheirDifferentEmptyInputSemantics,PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,profileChangesCodeBeforeDateValidationAsInTx1,PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,"acceptsValuesThatPassTheThreeOriginalComparisons(String, String)[1]",PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,"acceptsValuesThatPassTheThreeOriginalComparisons(String, String)[2]",PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,"acceptsValuesThatPassTheThreeOriginalComparisons(String, String)[3]",PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,"acceptsValuesThatPassTheThreeOriginalComparisons(String, String)[4]",PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,"acceptsValuesThatPassTheThreeOriginalComparisons(String, String)[5]",PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,"acceptsValuesThatPassTheThreeOriginalComparisons(String, String)[6]",PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,yearsUseOriginalDayOfYearComparisonAcrossLeapYears,PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,inverseIdRangeFallsBackToTextWhileNegativeAgeFallsBackToPosition,PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,inlineDateAndCodeUpdatesKeepSetterBehaviorAndManagerCode,PASS,Existing passing regression / characterization
+unit,compatibility.Tx1ServiceBehaviorTest,addStillRejectsHireBeforeBirthIncludingTimeOfDay,PASS,Existing passing regression / characterization
+unit,model.NgayCongTest,arbitrarilyCloseBoundaryUsesCrossMultiplicationInsteadOfRoundedDivision,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,model.NgayCongTest,doubleConstructorKeepsExistingGuiApiAndFixesNinetyPercent,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,model.NgayCongTest,displayRoundingDoesNotChangeClassification,PASS,Existing passing regression / characterization
+unit,model.NgayCongTest,defaultObjectAndLegacySettersStillWork,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,repository.InMemoryNhanSuRepositoryTest,replacingSampleDataIsAtomicAndRejectsCrossDepartmentDuplicates,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,repository.InMemoryNhanSuRepositoryTest,snapshotsCannotChangeStoreAndKeepOriginalModels,PASS,Existing passing regression / characterization
+unit,repository.InMemoryNhanSuRepositoryTest,rejectsDeletingEmployeeFromWrongDepartment,PASS,Existing passing regression / characterization
+unit,repository.InMemoryNhanSuRepositoryTest,deletingDepartmentsRemovesTheirEmployeesAndAllowsCodeReuse,PASS,Existing passing regression / characterization
+unit,service.NgayCongServiceTest,rejectsUnregisteredEmployeeAndResetsOnlySelectedDepartment,PASS,Existing passing regression / characterization
+unit,service.NgayCongServiceTest,rejectsNullAndBlankValues,PASS,Existing passing regression / characterization
+unit,service.NgayCongServiceTest,"classifiesAtExactDecimalBoundaries(String, String, String)[1]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"classifiesAtExactDecimalBoundaries(String, String, String)[2]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"classifiesAtExactDecimalBoundaries(String, String, String)[3]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"classifiesAtExactDecimalBoundaries(String, String, String)[4]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"classifiesAtExactDecimalBoundaries(String, String, String)[5]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"classifiesAtExactDecimalBoundaries(String, String, String)[6]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"classifiesAtExactDecimalBoundaries(String, String, String)[7]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"classifiesAtExactDecimalBoundaries(String, String, String)[8]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"classifiesAtExactDecimalBoundaries(String, String, String)[9]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"classifiesAtExactDecimalBoundaries(String, String, String)[10]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"classifiesAtExactDecimalBoundaries(String, String, String)[11]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"rejectsInvalidInputWithoutReplacingPreviousValue(String, String)[1]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"rejectsInvalidInputWithoutReplacingPreviousValue(String, String)[2]",PASS,Existing passing regression / characterization
+unit,service.NgayCongServiceTest,"rejectsInvalidInputWithoutReplacingPreviousValue(String, String)[3]",PASS,Existing passing regression / characterization
+unit,service.NgayCongServiceTest,"rejectsInvalidInputWithoutReplacingPreviousValue(String, String)[4]",PASS,Existing passing regression / characterization
+unit,service.NgayCongServiceTest,"rejectsInvalidInputWithoutReplacingPreviousValue(String, String)[5]",PASS,Existing passing regression / characterization
+unit,service.NgayCongServiceTest,"rejectsInvalidInputWithoutReplacingPreviousValue(String, String)[6]",PASS,Existing passing regression / characterization
+unit,service.NgayCongServiceTest,"rejectsInvalidInputWithoutReplacingPreviousValue(String, String)[7]",PASS,Existing passing regression / characterization
+unit,service.NgayCongServiceTest,"rejectsInvalidInputWithoutReplacingPreviousValue(String, String)[8]",PASS,Existing passing regression / characterization
+unit,service.NgayCongServiceTest,"rejectsInvalidInputWithoutReplacingPreviousValue(String, String)[9]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"rejectsInvalidInputWithoutReplacingPreviousValue(String, String)[10]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"rejectsInvalidInputWithoutReplacingPreviousValue(String, String)[11]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"rejectsInvalidInputWithoutReplacingPreviousValue(String, String)[12]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,"rejectsInvalidInputWithoutReplacingPreviousValue(String, String)[13]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,acceptsTrailingZerosWithoutRoundingAndDoubleCompatibility,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NgayCongServiceTest,rejectsNonFiniteDoublesOnBothInputs,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NhanVienServiceTest,concurrentAddsThroughDifferentServicesAcceptOnlyOneDuplicate,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NhanVienServiceTest,inlineDateChangesCannotBypassAgeRule,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NhanVienServiceTest,rejectsMissingFieldsAndInvalidDateOrderWithoutWriting,PASS,Existing passing regression / characterization
+unit,service.NhanVienServiceTest,rejectsDepartmentOutsideRepository,PASS,Existing passing regression / characterization
+unit,service.NhanVienServiceTest,leapDayBirthUsesCalendarAnniversary,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NhanVienServiceTest,rejectsOneDayBeforeEighteenthBirthdayAtHire,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NhanVienServiceTest,addsSameModelInstanceAndInitializesWorkdays,PASS,Existing passing regression / characterization
+unit,service.NhanVienServiceTest,rejectsDuplicateWithinAndAcrossDepartmentsIncludingCaseAndWhitespace,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NhanVienServiceTest,validProfileUpdatePreservesWorkdaysAndEducation,PASS,Existing passing regression / characterization
+unit,service.NhanVienServiceTest,acceptsExactlyEighteenAtHireEvenWhenNotEighteenToday,PASS,Existing passing regression / characterization
+unit,service.NhanVienServiceTest,failedProfileUpdateDoesNotPartiallyRenameEmployee,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.NhanVienServiceTest,renameChecksGlobalUniquenessAndKeepsManagerReference,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.TimKiemNhanVienServiceTest,filterAndSearchShareTheSameRuleAfterEditing,PASS,Existing passing regression / characterization
+unit,service.TimKiemNhanVienServiceTest,"rejectsInvalidNumericFiltersWithoutChangingData(String, String)[1]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.TimKiemNhanVienServiceTest,"rejectsInvalidNumericFiltersWithoutChangingData(String, String)[2]",FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.TimKiemNhanVienServiceTest,"rejectsInvalidNumericFiltersWithoutChangingData(String, String)[3]",PASS,Existing passing regression / characterization
+unit,service.TimKiemNhanVienServiceTest,"rejectsInvalidNumericFiltersWithoutChangingData(String, String)[4]",PASS,Existing passing regression / characterization
+unit,service.TimKiemNhanVienServiceTest,"rejectsInvalidNumericFiltersWithoutChangingData(String, String)[5]",PASS,Existing passing regression / characterization
+unit,service.TimKiemNhanVienServiceTest,"rejectsInvalidNumericFiltersWithoutChangingData(String, String)[6]",PASS,Existing passing regression / characterization
+unit,service.TimKiemNhanVienServiceTest,rejectsBlankUnknownCriterionAndInvalidGender,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.TimKiemNhanVienServiceTest,textSearchIsCaseInsensitiveAndScopedToDepartment,PASS,Existing passing regression / characterization
+unit,service.TimKiemNhanVienServiceTest,supportsIdNumberRangeAndTextWithoutLosingLeadingZeroMatching,PASS,Existing passing regression / characterization
+unit,service.TimKiemNhanVienServiceTest,largeIdNumberDoesNotOverflowAndNullDatesDoNotMatchAge,PASS,Existing passing regression / characterization
+unit,service.TimKiemNhanVienServiceTest,ageAndSeniorityUseFullYearsAtInjectedClock,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+unit,service.TimKiemNhanVienServiceTest,futureDatesDoNotMatchZeroYears,PASS,Existing passing regression / characterization
+unit,unit.JUnit6Test,testJUnit6,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,CV_01,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,CV_02,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,CV_03,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,CV_04,FAIL,Unchanged TX1 specification defect
+gui,GUIBlackBox58Test,CV_05,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,CV_06,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,CV_07,FAIL,Unchanged TX1 specification defect
+gui,GUIBlackBox58Test,CV_08,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,CV_09,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,CV_10,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,CV_11,FAIL,Unchanged TX1 specification defect
+gui,GUIBlackBox58Test,CV_12,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,NC_01,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,NC_02,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,NC_03,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,NC_04,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,NC_05,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,NC_06,FAIL,Unchanged TX1 specification defect
+gui,GUIBlackBox58Test,NC_07,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,NC_08,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,NC_09,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,NC_10,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,NC_11,FAIL,Unchanged TX1 specification defect
+gui,GUIBlackBox58Test,NC_12,FAIL,Unchanged TX1 specification defect
+gui,GUIBlackBox58Test,NC_13,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,NC_14,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,NC_15,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,NC_16,FAIL,Unchanged TX1 specification defect
+gui,GUIBlackBox58Test,TK_01,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TK_02,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TK_03,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TK_04,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TK_05,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TK_06,FAIL,Unchanged TX1 specification defect
+gui,GUIBlackBox58Test,TK_07,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TK_08,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TK_09,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TK_10,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TK_11,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TK_12,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TK_13,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TK_14,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TK_15,FAIL,Unchanged TX1 specification defect
+gui,GUIBlackBox58Test,TN_01,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TN_02,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TN_03,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TN_04,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TN_05,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TN_06,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TN_07,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TN_08,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TN_09,FAIL,Unchanged TX1 specification defect
+gui,GUIBlackBox58Test,TN_10,FAIL,Unchanged TX1 specification defect
+gui,GUIBlackBox58Test,TN_11,FAIL,Unchanged TX1 specification defect
+gui,GUIBlackBox58Test,TN_12,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TN_13,PASS,Existing passing regression / characterization
+gui,GUIBlackBox58Test,TN_14,FAIL,Unchanged TX1 specification defect
+gui,GUIBlackBox58Test,TN_15,PASS,Existing passing regression / characterization
+gui,ServiceSwingIntegrationTest,injectedRepositoryIsTheSameStoreUsedByEmployeeForm,PASS,Existing passing regression / characterization
+gui,ServiceSwingIntegrationTest,profileValidationDoesNotPartiallyRenameOnInvalidDates,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+gui,ServiceSwingIntegrationTest,workdaysFollowEmployeeIdentityAfterSortingAndRefresh,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+gui,ServiceSwingIntegrationTest,searchTableUsesCompanyStoreAndRejectsCodeFromAnotherDepartment,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+gui,ServiceSwingIntegrationTest,mainTableCannotRenameEmployeeToExistingCode,FAIL,Unchanged stage-1 specification / BigDecimal assertion conflict with TX1
+gui,Tx1SwingBehaviorCompatibilityTest,"addingHasSameStateAndMessagesAsOriginal(int, String, String, String)[1]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"addingHasSameStateAndMessagesAsOriginal(int, String, String, String)[2]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"addingHasSameStateAndMessagesAsOriginal(int, String, String, String)[3]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"addingHasSameStateAndMessagesAsOriginal(int, String, String, String)[4]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"addingHasSameStateAndMessagesAsOriginal(int, String, String, String)[5]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"addingHasSameStateAndMessagesAsOriginal(int, String, String, String)[6]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"addingHasSameStateAndMessagesAsOriginal(int, String, String, String)[7]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"addingHasSameStateAndMessagesAsOriginal(int, String, String, String)[8]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"addingHasSameStateAndMessagesAsOriginal(int, String, String, String)[9]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[1]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[2]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[3]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[4]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[5]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[6]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[7]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[8]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[9]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[10]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[11]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[12]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[13]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[14]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[15]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[16]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[17]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[18]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[19]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"workdaysHaveSameBitsClassificationMessagesAndUi(String, String)[20]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,profileKeepsDuplicateCodesAgeAndPartialUpdateOrder(String)[1],PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,profileKeepsDuplicateCodesAgeAndPartialUpdateOrder(String)[2],PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,inlineDateAndDuplicateCodeSettersMatchOriginal,PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"filtersHaveSameFallbackErrorsAndResults(String, String)[1]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"filtersHaveSameFallbackErrorsAndResults(String, String)[2]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"filtersHaveSameFallbackErrorsAndResults(String, String)[3]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"filtersHaveSameFallbackErrorsAndResults(String, String)[4]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"filtersHaveSameFallbackErrorsAndResults(String, String)[5]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"filtersHaveSameFallbackErrorsAndResults(String, String)[6]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"filtersHaveSameFallbackErrorsAndResults(String, String)[7]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"filtersHaveSameFallbackErrorsAndResults(String, String)[8]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"filtersHaveSameFallbackErrorsAndResults(String, String)[9]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"filtersHaveSameFallbackErrorsAndResults(String, String)[10]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"filtersHaveSameFallbackErrorsAndResults(String, String)[11]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"filtersHaveSameFallbackErrorsAndResults(String, String)[12]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"filtersHaveSameFallbackErrorsAndResults(String, String)[13]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"filtersHaveSameFallbackErrorsAndResults(String, String)[14]",PASS,Existing passing regression / characterization
+gui,Tx1SwingBehaviorCompatibilityTest,"filtersHaveSameFallbackErrorsAndResults(String, String)[15]",PASS,Existing passing regression / characterization
+api,api.NhanSuApiIntegrationTest,unsupportedMethodUnknownRouteAndContentTypeHaveJsonErrors,PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,malformedUuidUnknownRecordAndUnknownDepartmentHaveExplicitErrors,PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"invalidDaysAreRejectedByServiceWithoutChangingRecord(String, String)[1]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"invalidDaysAreRejectedByServiceWithoutChangingRecord(String, String)[2]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"invalidDaysAreRejectedByServiceWithoutChangingRecord(String, String)[3]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"invalidDaysAreRejectedByServiceWithoutChangingRecord(String, String)[4]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"invalidDaysAreRejectedByServiceWithoutChangingRecord(String, String)[5]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"invalidDaysAreRejectedByServiceWithoutChangingRecord(String, String)[6]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,retainsTx1DateOrderRejectionWithoutMutation,PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"daysMatchExistingServiceIncludingNonFiniteAndDoubleBoundary(String, String, String)[1]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"daysMatchExistingServiceIncludingNonFiniteAndDoubleBoundary(String, String, String)[2]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"daysMatchExistingServiceIncludingNonFiniteAndDoubleBoundary(String, String, String)[3]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"daysMatchExistingServiceIncludingNonFiniteAndDoubleBoundary(String, String, String)[4]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"daysMatchExistingServiceIncludingNonFiniteAndDoubleBoundary(String, String, String)[5]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"daysMatchExistingServiceIncludingNonFiniteAndDoubleBoundary(String, String, String)[6]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"daysMatchExistingServiceIncludingNonFiniteAndDoubleBoundary(String, String, String)[7]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"daysMatchExistingServiceIncludingNonFiniteAndDoubleBoundary(String, String, String)[8]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,blankNameUsesExistingServiceValidation,PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"missingFieldsSeparateTransportFromExistingBusinessValidation(String, int)[1]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"missingFieldsSeparateTransportFromExistingBusinessValidation(String, int)[2]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"missingFieldsSeparateTransportFromExistingBusinessValidation(String, int)[3]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"missingFieldsSeparateTransportFromExistingBusinessValidation(String, int)[4]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,emptyQueryRetainsServiceErrorAndMissingQueryIsHttpError,PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,serverRunsHeadlessWithDeterministicSeedAndNoFrame,PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,resetRestoresFixtureAndInvalidatesOldTechnicalIds,PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,rejectsMalformedOrWrongJsonTypes(String)[1],PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,rejectsMalformedOrWrongJsonTypes(String)[2],PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,rejectsMalformedOrWrongJsonTypes(String)[3],PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,rejectsMalformedOrWrongJsonTypes(String)[4],PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,rejectsMalformedOrWrongJsonTypes(String)[5],PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,rejectsMalformedOrWrongJsonTypes(String)[6],PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"retainsTx1CodeFilterBranches(String, int)[1]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"retainsTx1CodeFilterBranches(String, int)[2]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"retainsTx1CodeFilterBranches(String, int)[3]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"retainsTx1CodeFilterBranches(String, int)[4]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"retainsTx1CodeFilterBranches(String, int)[5]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"retainsTx1AgeAndSameDateAcceptance(String, String)[1]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,"retainsTx1AgeAndSameDateAcceptance(String, String)[2]",PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,rejectsInvalidDateRepresentation(String)[1],PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,rejectsInvalidDateRepresentation(String)[2],PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,rejectsInvalidDateRepresentation(String)[3],PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,duplicateCodesAcrossDepartmentsGetDifferentUuidsAndUpdateIndependently,PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,createReadAndQueryUseTheSameRepository,PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,wrongCreateFieldTypesAreHttpErrors(String)[1],PASS,HTTP contract / TX1 behavior
+api,api.NhanSuApiIntegrationTest,wrongCreateFieldTypesAreHttpErrors(String)[2],PASS,HTTP contract / TX1 behavior
+api,api.ResetDisabledIntegrationTest,resetEndpointIsAbsentByDefault,PASS,HTTP contract / TX1 behavior
